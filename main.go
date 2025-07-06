@@ -17,6 +17,8 @@ const (
 )
 
 var (
+	fileName = ""
+
 	baseStyle = lipgloss.NewStyle().Width(appWidth)
 
 	headerStyle = baseStyle.
@@ -67,7 +69,7 @@ func (m model) Init() tea.Cmd {
 }
 
 func (m model) Save() error {
-	file, err := os.Create("events.json")
+	file, err := os.Create(fileName + ".json")
 	if err != nil {
 		return err
 	}
@@ -81,7 +83,7 @@ func (m model) Save() error {
 
 func Load() ([]Event, error) {
 	empty := []Event{}
-	file, err := os.Open("events.json")
+	file, err := os.Open(fileName + ".json")
 	if err != nil {
 		if os.IsNotExist(err) {
 			return empty, nil
@@ -140,7 +142,7 @@ func (m model) View() string {
 			"Terminal too small")
 	}
 
-	header := headerStyle.Render("Gday, sir!")
+	header := headerStyle.Render("Gday, sir! " + fileName)
 
 	visible := min(25, m.viewportHeight-6)
 	if visible > len(m.events) {
@@ -163,6 +165,11 @@ func (m model) View() string {
 }
 
 func main() {
+	fileName = time.Now().Format("2006_01_02")
+	if len(os.Args) > 1 {
+		fileName = strings.Join(os.Args[1:], "_")
+	}
+
 	ti := textinput.New()
 	ti.Placeholder = "Type your item"
 	ti.Focus()
