@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -25,6 +26,8 @@ type model struct {
 	time      string
 	textInput textinput.Model
 	events    []Event
+
+	index int
 }
 
 func InitModel(f string) {
@@ -48,7 +51,7 @@ func InitModel(f string) {
 }
 
 func (m model) PrintHeader() string {
-	return styles["header"].Render("Gday, sir! " + m.fileName)
+	return styles["header"].Render(fmt.Sprintf("Gday, sir! %s %d", m.fileName, m.index))
 }
 
 func (m model) PrintContent() string {
@@ -59,8 +62,13 @@ func (m model) PrintContent() string {
 	recent := m.events[len(m.events)-visible:]
 
 	events := ""
-	for _, e := range recent {
-		events = e.Lipglossed() + "\n" + events
+
+	if m.index == 0 {
+		for _, e := range recent {
+			events = e.Lipglossed() + "\n" + events
+		}
+	} else {
+		// TODO: change content view if mode is select
 	}
 
 	underline := strings.Repeat("─", appWidth)

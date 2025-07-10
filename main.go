@@ -49,6 +49,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					panic(err)
 				}
 			}
+		case "up":
+			m.index = max(0, m.index-1)
+		case "down":
+			m.index = min(len(m.events), m.index+1)
 		}
 
 	case tea.WindowSizeMsg:
